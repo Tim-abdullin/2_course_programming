@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+/lecture/.idea
+/lecture/1_lecture/.idea
+.DS_Store
+/lecture/.DS_Store
+lecture/1_lecture/cmake-build-debug
