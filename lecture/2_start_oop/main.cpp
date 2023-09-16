@@ -4,65 +4,9 @@
 // Write a class to work with string. Write tests for every method.
 
 #include <iostream>
-#include <cstring>
+#include "FooString.h"
 
 using namespace std;
-
-class FooString{
-private:
-    char *buf;
-
-public:
-    FooString(char* tbuf);
-    ~FooString();
-    void show();
-    int length();
-    bool compare(const FooString& str);
-    bool compare(char* str);
-    void add(const FooString& str);
-    void add(char* str);
-};
-
-FooString::FooString(char* tbuf){
-    buf = new char[strlen(tbuf) + 1];
-    strcpy(buf, tbuf);
-}
-
-FooString::~FooString(){
-    delete[] buf;
-}
-
-void FooString::show(){
-    cout << buf << endl;
-}
-
-int FooString::length(){
-    return strlen(buf);
-}
-
-bool FooString::compare(const FooString& str){
-    return strcmp(buf, str.buf) == 0;
-}
-
-bool FooString::compare(char* str){
-    return strcmp(buf, str) == 0;
-}
-
-void FooString::add(const FooString& str){
-    char *newBuf = new char[strlen(buf) + strlen(str.buf) + 1];
-    strcpy(newBuf, buf);
-    strcat(newBuf, str.buf);
-    delete[] buf;
-    buf = newBuf;
-}
-
-void FooString::add(char* str){
-    char *newBuf = new char[strlen(buf) + strlen(str) + 1];
-    strcpy(newBuf, buf);
-    strcat(newBuf, str);
-    delete[] buf;
-    buf = newBuf;
-}
 
 int main(){
     FooString str1("Hello");
