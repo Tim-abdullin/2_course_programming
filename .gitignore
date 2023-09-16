@@ -32,7 +32,8 @@
 *.app
 
 /lecture/.idea
-/lecture/1_lecture/.idea
 .DS_Store
 /lecture/.DS_Store
-lecture/1_lecture/cmake-build-debug
+
+/lecture/*/.idea
+/lecture/*/cmake-build-debug
