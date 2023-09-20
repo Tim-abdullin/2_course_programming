@@ -1,6 +1,7 @@
 //
 // Created by Тимур Абдуллин on 16.09.2023.
 //
+#pragma once
 
 #ifndef INC_2_START_OOP_FOOSTRING_H
 #define INC_2_START_OOP_FOOSTRING_H

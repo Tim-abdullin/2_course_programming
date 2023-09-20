@@ -37,3 +37,7 @@
 
 /lecture/*/.idea
 /lecture/*/cmake-build-debug
+
+/practice/.idea/
+/practice/*/.idea
+/practice/*/cmake-build-debug
