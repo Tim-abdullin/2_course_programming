@@ -60,11 +60,11 @@ public:
 
     // проверка выхода за границы
     int get_range_check(int i){
-        if (arr[i] >= 0 && arr[i] <= arr_size) return arr[i];
-        else{
+        if (i < 0 || i > arr_size) {
             cout << "Out of range. Returned -1" << endl;
             return -1;
         }
+        return arr[i];
     }
 
     int check_num(int16_t num){
@@ -74,12 +74,14 @@ public:
 
     // Сеттер значения в промежутке [-100, 100] и проверяющий выход за границы
     void set_num(int16_t num, int index){
-        if (check_num(num) && get_range_check(index)){
-            arr[index] = num;
+        if (!check_num(num)) {
+            cout << "Out of vals. Not changed" << endl;
         }
-        else {
+        if (!get_range_check(index)) {
             cout << "Out of range. Not changed" << endl;
         }
+        arr[index] = num;
+
     }
 
     // добавление значения в конец массива с расширением его размера
