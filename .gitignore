@@ -42,3 +42,5 @@
 /practice/*/.idea
 /practice/*/cmake-build-debug
 /java
+/lecture/*/.vscode
+/lecture/*/main.dSYM
