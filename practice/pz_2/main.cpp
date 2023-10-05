@@ -6,30 +6,21 @@ using namespace std;
 
 class DynamicArray{
 private:
-    int arr_size{};
+    int arr_size;
     int16_t *arr;
 
 public:
     // Конструктор
     DynamicArray(int mas_size){
-        try{
-            arr_size = mas_size;
-            arr = new int16_t[arr_size];
-        }
-        catch(bad_alloc &e){
-            cerr << "Falled to allocate memory: " << e.what() << endl;
-            throw;
-        }
-
+        arr_size = mas_size;
+        arr = new int16_t[arr_size];
     }
 
     // Конструктор копирования
-    DynamicArray(DynamicArray &mas){
-        arr_size = mas.get_size();
+    DynamicArray(const DynamicArray &mas){
+        arr_size = mas.arr_size;
         arr = new int16_t[arr_size];
-        for (int i = 0; i < arr_size; i++){
-            arr[i] = mas.get_num(i);
-        }
+        memcpy(arr, mas.arr, sizeof(int16_t)*arr_size);
     }
 
     // Деструктор
@@ -57,8 +48,7 @@ public:
 
     // проверка выхода за границы
     int get_range_check(int i){
-        if (i < 0 || i > arr_size) {
-            cout << "Out of range. Returned -1" << endl;
+        if (i < 0 || i >= arr_size) {
             return 0;
         }
         return 1;
@@ -86,33 +76,47 @@ public:
         if (!check_num(newNum)){
             throw invalid_argument("Value must be un range [-100, 100]");
         }
-        try {
-            int16_t *newArr = new int16_t[arr_size + 1];
-            for (int i = 0; i < arr_size; i++){
-                newArr[i] = arr[i];
-            }
-            delete[] arr;
-            arr = newArr;
-            delete[] newArr;
-            arr[arr_size] = newNum;
-            arr_size++;
+        auto *newArr = new int16_t[arr_size + 1];
+        for (int i = 0; i < arr_size; i++){
+            newArr[i] = arr[i];
         }
-        catch (bad_alloc &e){
-            cerr << "Failed to allocate memory: " << e.what() << endl;
-            throw;
-        }
+        delete[] arr;
+        arr = newArr;
+        delete[] newArr;
+        arr[arr_size] = newNum;
+        arr_size++;
     }
 
     // сложение двух массивов
     void sum(DynamicArray &mas) {
+        if (arr_size != mas.get_size()) {
+            throw invalid_argument("Arrays must have the same size for addition");
+        }
+
+        int16_t *tempArr = new int16_t[arr_size];
         for (int i = 0; i < mas.get_size();i++){
-            arr[i] += mas.get_num(i);}
+            tempArr[i] = arr[i] + mas.get_num(i);
+        }
+
+        memcpy(arr, tempArr, sizeof(int16_t) * arr_size);
+
+        delete [] tempArr;
     }
 
     // вычитание двух массивов
     void sub(DynamicArray &mas) {
+        if (arr_size != mas.get_size()) {
+            throw invalid_argument("Arrays must have the same size for addition");
+        }
+
+        int16_t *tempArr = new int16_t[arr_size];
         for (int i = 0; i < mas.get_size();i++){
-            arr[i] -= mas.get_num(i);}
+            tempArr[i] = arr[i] - mas.get_num(i);
+        }
+
+        memcpy(arr, tempArr, sizeof(int16_t) * arr_size);
+
+        delete [] tempArr;
     }
 };
 
@@ -129,7 +133,7 @@ int main(){
     int size_2;
     cin >> size_2;
     DynamicArray mas_2(size_2);
-    for (int i = 0; i < size_1; i++){
+    for (int i = 0; i < size_2; i++){
         int16_t number;
         cin >> number;
         mas_2.set_num(number, i);
