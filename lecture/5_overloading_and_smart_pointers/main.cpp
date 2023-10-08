@@ -11,7 +11,7 @@ public:
     SmartPointer(T* ptr){
         this->ptr = ptr;
     }
-    
+
     ~SmartPointer(){
         delete ptr;
     }
