@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <stdexcept>
 
 using namespace std;
 
@@ -40,6 +41,10 @@ public:
     // возврат длины массива
     int get_size(){
         return arr_size;
+    }
+
+    void set_size(int size){
+        arr_size = size;
     }
 
     // возврат значения элемента
@@ -112,101 +117,94 @@ public:
 };
 
 int main() {
-    try{
-        int size_1;
-        cin >> size_1;
+    DynamicArray mas_1(0);
+    DynamicArray mas_2(0);
+
+
+    int size_1;
+    cin >> size_1;
+
+    try {
         if (size_1 < 0) {
-            throw invalid_argument("Array 1 size must be 0 or positive integer");
+            throw out_of_range ("size_1 must be nonnegative");
         }
-        DynamicArray mas_1(size_1);
+        mas_1.set_size(size_1);
         for (int i = 0; i < size_1; i++) {
             int16_t number;
             cin >> number;
             mas_1.set_num(number, i);
         }
+    }
+    catch (const exception &e) {
+        cerr << "Error: " << e.what() << endl;
+    }
 
-        int size_2;
-        cin >> size_2;
+    int size_2;
+    cin >> size_2;
+
+    try {
         if (size_2 < 0) {
-            throw invalid_argument("Array 2 size must be 0 or positive integer");
+            throw out_of_range ("size_2 must be nonnegative");
         }
-        DynamicArray mas_2(size_2);
+        mas_2.set_size(size_2);
         for (int i = 0; i < size_2; i++) {
             int16_t number;
             cin >> number;
             mas_2.set_num(number, i);
         }
-
-        int n;
-        cin >> n;
-
-        for (int i = 0; i < n; i++) {
-            int command, arr_index;
-            cin >> command >> arr_index;
-            if (arr_index == 1) {
-                if (command == 1) {
-                    int index;
-                    cin >> index;
-                    if (index <0 || index >= size_1) {
-                        throw out_of_range("Index out of Array 1 range");
-                    }
-                    cout << mas_1.get_num(index) << endl;
-                } else if (command == 2) {
-                    int index, newValue;
-                    cin >> index >> newValue;
-                    if (index <0 || index >= size_1) {
-                        throw out_of_range("Index out of Array 1 range");
-                    }
-                    mas_1.set_num(newValue, index);
-                } else if (command == 3) {
-                    int newValue;
-                    cin >> newValue;
-                    mas_1.append(newValue);
-                } else if (command == 4) {
-                    mas_1.print_array();
-                } else if (command == 5) {
-                    mas_1.sum(mas_2);
-                } else if (command == 6) {
-                    mas_1.sub(mas_2);
-                }
-            }
-            if (arr_index == 2) {
-                if (command == 1) {
-                    int index;
-                    cin >> index;
-                    if (index <0 || index >= size_2) {
-                        throw out_of_range("Index out of Array 2 range");
-                    }
-                    cout << mas_2.get_num(index) << endl;
-                } else if (command == 2) {
-                    int index, newValue;
-                    cin >> index >> newValue;
-                    if (index <0 || index >= size_1) {
-                        throw out_of_range("Index out of Array 2 range");
-                    }
-                    mas_2.set_num(newValue, index);
-                } else if (command == 3) {
-                    int newValue;
-                    cin >> newValue;
-                    mas_2.append(newValue);
-                } else if (command == 4) {
-                    mas_2.print_array();
-                } else if (command == 5) {
-                    mas_2.sum(mas_2);
-                } else if (command == 6) {
-                    mas_2.sub(mas_2);
-                }
-            }
-        }
-    }
-    catch (const invalid_argument &e) {
-        cerr << "Invalid argument: " << e.what() << endl;
-    }
-    catch (const out_of_range &e) {
-        cerr << "Out of range: " << e.what() << endl;
     }
     catch (const exception &e) {
         cerr << "Error: " << e.what() << endl;
+    }
+
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        int command, arr_index;
+        cin >> command >> arr_index;
+        if (arr_index == 1) {
+            if (command == 1) {
+                int index;
+                cin >> index;
+                cout << mas_1.get_num(index) << endl;
+            } else if (command == 2) {
+                int index, newValue;
+                cin >> index >> newValue;
+                mas_1.set_num(newValue, index);
+            } else if (command == 3) {
+                int newValue;
+                cin >> newValue;
+                mas_1.append(newValue);
+            } else if (command == 4) {
+                mas_1.print_array();
+            } else if (command == 5) {
+                mas_1.sum(mas_2);
+            } else if (command == 6) {
+                mas_1.sub(mas_2);
+            }
+        }
+        if (arr_index == 2) {
+            if (command == 1) {
+                int index;
+                cin >> index;
+                cout << mas_2.get_num(index) << endl;
+            } else if (command == 2) {
+                int index, newValue;
+                cin >> index >> newValue;
+                mas_2.set_num(newValue, index);
+            } else if (command == 3) {
+                int newValue;
+                cin >> newValue;
+                mas_2.append(newValue);
+            } else if (command == 4) {
+                mas_2.print_array();
+            } else if (command == 5) {
+                mas_2.sum(mas_2);
+            } else if (command == 6) {
+                mas_2.sub(mas_2);
+            }
+        }
     }
 
     return 0;
