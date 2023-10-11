@@ -44,6 +44,10 @@ public:
     }
 
     void set_size(int size){
+        auto* tempArr = new int16_t[size];
+        memcpy(arr, tempArr, sizeof(int16_t)*arr_size);
+        delete [] arr;
+        arr = tempArr;
         arr_size = size;
     }
 
@@ -80,7 +84,7 @@ public:
     // добавление значения в конец массива с расширением его размера
     void append(int16_t newNum){
         if (!check_num(newNum)){
-            throw invalid_argument("Value must be un range [-100, 100]");
+            throw invalid_argument("Value must be in range [-100, 100]");
         }
         auto *newArr = new int16_t[arr_size + 1];
         for (int i = 0; i < arr_size; i++){
@@ -114,47 +118,40 @@ public:
             arr[i] -= mas.get_num(i);
         }
     }
+
+    void input_array(){
+        int newSize;
+        cin >> newSize;
+
+        if (newSize < 0) {
+            throw out_of_range ("size_1 must be nonnegative");
+        }
+        set_size(newSize);
+
+        for (int i = 0; i < newSize; i++) {
+            int16_t number;
+            cin >> number;
+            set_num(number, i);
+        }
+    }
 };
 
 int main() {
     DynamicArray mas_1(0);
     DynamicArray mas_2(0);
 
-
-    int size_1;
-    cin >> size_1;
-
     try {
-        if (size_1 < 0) {
-            throw out_of_range ("size_1 must be nonnegative");
-        }
-        mas_1.set_size(size_1);
-        for (int i = 0; i < size_1; i++) {
-            int16_t number;
-            cin >> number;
-            mas_1.set_num(number, i);
-        }
+        mas_1.input_array();
     }
     catch (const exception &e) {
-        cerr << "Error: " << e.what() << endl;
+        cerr << "Error for mas_1: " << e.what() << endl;
     }
-
-    int size_2;
-    cin >> size_2;
 
     try {
-        if (size_2 < 0) {
-            throw out_of_range ("size_2 must be nonnegative");
-        }
-        mas_2.set_size(size_2);
-        for (int i = 0; i < size_2; i++) {
-            int16_t number;
-            cin >> number;
-            mas_2.set_num(number, i);
-        }
+        mas_2.input_array();
     }
     catch (const exception &e) {
-        cerr << "Error: " << e.what() << endl;
+        cerr << "Error for mas_2: " << e.what() << endl;
     }
 
     int n;
@@ -200,9 +197,9 @@ int main() {
             } else if (command == 4) {
                 mas_2.print_array();
             } else if (command == 5) {
-                mas_2.sum(mas_2);
+                mas_2.sum(mas_1);
             } else if (command == 6) {
-                mas_2.sub(mas_2);
+                mas_2.sub(mas_1);
             }
         }
     }
