@@ -44,6 +44,10 @@ public:
     }
 
     void set_size(int size){
+        if (size < 0) {
+            throw out_of_range("std:out_of_range");
+        }
+
         auto* tempArr = new int16_t[size];
         memcpy(arr, tempArr, sizeof(int16_t)*arr_size);
         delete [] arr;
@@ -53,6 +57,9 @@ public:
 
     // возврат значения элемента
     int get_num(int i){
+        if (!get_range_check(i)) {
+            throw out_of_range("std:out_of_range");
+        }
         return arr[i];
     }
 
@@ -72,10 +79,10 @@ public:
     // Сеттер значения в промежутке [-100, 100] и проверяющий выход за границы
     void set_num(int16_t num, int index){
         if (!check_num(num)) {
-            throw invalid_argument("Value must be un range [-100, 100]");
+            throw invalid_argument("std:invalid_argument");
         }
         if (!get_range_check(index)) {
-            throw out_of_range("Index out of range");
+            throw out_of_range("std:out_of_range");
         }
         arr[index] = num;
 
@@ -84,7 +91,7 @@ public:
     // добавление значения в конец массива с расширением его размера
     void append(int16_t newNum){
         if (!check_num(newNum)){
-            throw invalid_argument("Value must be in range [-100, 100]");
+            throw invalid_argument("std:invalid_argument");
         }
         auto *newArr = new int16_t[arr_size + 1];
         for (int i = 0; i < arr_size; i++){
@@ -92,7 +99,6 @@ public:
         }
         delete[] arr;
         arr = newArr;
-        delete[] newArr;
         arr[arr_size] = newNum;
         arr_size++;
     }
@@ -124,7 +130,7 @@ public:
         cin >> newSize;
 
         if (newSize < 0) {
-            throw out_of_range ("size_1 must be nonnegative");
+            throw out_of_range ("std:out_of_range");
         }
         set_size(newSize);
 
@@ -143,64 +149,65 @@ int main() {
     try {
         mas_1.input_array();
     }
+    catch (const out_of_range &e) {
+        cout << e.what() << endl;
+    }
+    catch (const invalid_argument &e) {
+        cout << e.what() << endl;
+    }
     catch (const exception &e) {
-        cerr << "Error for mas_1: " << e.what() << endl;
+        cout << e.what() << endl;
     }
 
     try {
         mas_2.input_array();
     }
+    catch (const out_of_range &e) {
+        cout << e.what() << endl;
+    }
+    catch (const invalid_argument &e) {
+        cout << e.what() << endl;
+    }
     catch (const exception &e) {
-        cerr << "Error for mas_2: " << e.what() << endl;
+        cout << e.what() << endl;
     }
 
     int n;
     cin >> n;
 
     for (int i = 0; i < n; i++) {
-        int command, arr_index;
-        cin >> command >> arr_index;
-        if (arr_index == 1) {
+        try {
+            int command, arr_index;
+            cin >> command >> arr_index;
+
             if (command == 1) {
                 int index;
                 cin >> index;
-                cout << mas_1.get_num(index) << endl;
+                cout << (arr_index==1?mas_1:mas_2).get_num(index) << endl;
             } else if (command == 2) {
                 int index, newValue;
                 cin >> index >> newValue;
-                mas_1.set_num(newValue, index);
+                (arr_index==1?mas_1:mas_2).set_num(newValue, index);
             } else if (command == 3) {
                 int newValue;
                 cin >> newValue;
-                mas_1.append(newValue);
+                (arr_index==1?mas_1:mas_2).append(newValue);
             } else if (command == 4) {
-                mas_1.print_array();
+                (arr_index==1?mas_1:mas_2).print_array();
             } else if (command == 5) {
-                mas_1.sum(mas_2);
+                (arr_index==1?mas_1:mas_2).sum(mas_2);
             } else if (command == 6) {
-                mas_1.sub(mas_2);
+                (arr_index==1?mas_1:mas_2).sub(mas_2);
             }
         }
-        if (arr_index == 2) {
-            if (command == 1) {
-                int index;
-                cin >> index;
-                cout << mas_2.get_num(index) << endl;
-            } else if (command == 2) {
-                int index, newValue;
-                cin >> index >> newValue;
-                mas_2.set_num(newValue, index);
-            } else if (command == 3) {
-                int newValue;
-                cin >> newValue;
-                mas_2.append(newValue);
-            } else if (command == 4) {
-                mas_2.print_array();
-            } else if (command == 5) {
-                mas_2.sum(mas_1);
-            } else if (command == 6) {
-                mas_2.sub(mas_1);
-            }
+        catch (const invalid_argument &e) {
+            cout << e.what() << endl;
+        }
+        catch (const out_of_range &e) {
+            cout << e.what() << endl;
+        }
+        catch (const exception &e){
+            cout << e.what() << endl;
         }
     }
 
