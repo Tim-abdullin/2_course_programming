@@ -7,10 +7,9 @@ using namespace std;
 
 int calculate_hash(const string& str){
     int hashKey = 10783;
-    int len = str.length();
-    for (int i = 0; i < len; i++) {
-        hashKey *= len;
-        hashKey += str[i];
+//    int len = str.length();
+    for (char ch : str) {
+        hashKey = (((hashKey << 5) + hashKey) + ch);
     }
 
     return hashKey;
@@ -86,7 +85,7 @@ int collisions_count(const vector<int> &hashes) {
             }
         }
     }
-    return count;
+    return count/2;
 }
 
 
