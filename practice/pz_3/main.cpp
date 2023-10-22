@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdlib>
 #include <random>
+#include <chrono>
 
 using namespace std;
 
@@ -88,6 +89,20 @@ int collisions_count(const vector<int> &hashes) {
     return count/2;
 }
 
+template <typename  T>
+void compare_data(const vector<T> &data) {
+    auto start_time = chrono::steady_clock::now();
+    for (int i = 0; i < data.size(); i++) {
+        for (int j = i + 1; j < data.size(); j++) {
+            if (data[i] == data[j]) {
+                // Что-то делаем...
+            }
+        }
+    }
+    auto end_time = chrono::steady_clock::now();
+    auto diff = end_time - start_time;
+    cout << "Время сравнения: " << chrono::duration <double, milli> (diff).count() << " ms" << endl;
+}
 
 // вывод векторы типа Т
 template <typename T>
@@ -132,6 +147,13 @@ int main() {
 
     // получим кол-во коллизий
     cout << collisions_count(hashes) << endl;
+
+    // сравнение строк
+    cout << "\nСравнение строк:" << endl;
+    compare_data(stringsToChange);
+
+    cout << "\nСравнение хэшей:" << endl;
+    compare_data(hashes);
 
     return 0;
 }
