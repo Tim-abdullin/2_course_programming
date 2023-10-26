@@ -16,10 +16,17 @@ int calculate_hash(const string& str){
     return hashKey;
 }
 
-string generate_rand(mt19937 &gen) {
-    uniform_int_distribution<> lenDistribution(3, 7);
-    int strLen = lenDistribution(gen);
+string generate_rand(mt19937 &gen, int mode) {
+    int strLen = 0;
     string str;
+
+    if (mode == 0) {
+        uniform_int_distribution<> lenDistribution(3, 7);
+        strLen = lenDistribution(gen);
+    }
+    else {
+        strLen = mode;
+    }
 
     for (int j = 0; j < strLen; j++) {
         if (gen() % 2 == 0) {
@@ -73,19 +80,17 @@ void modify_string(mt19937 &gen, vector<string> &stringsToChange, int word_index
 //    return false;
 //}
 
-int collisions_count(const vector<int> &hashes) {
+int collisions_count(const vector<int> &hashes, const vector<string> &strings) {
     int count = 0;
     for (int i = 0; i < hashes.size(); i++) {
         for (int j = 0; j < hashes.size(); j++) {
-            if (i == j) {
-                continue;
-            }
-            if (hashes[i] == hashes[j]) {
+            if ((hashes[i] == hashes[j]) && (strings[i] != strings[j]) && i != j) {
                 count++;
                 cout << "Коллизия между " << i << " и " << j << endl;
             }
         }
     }
+    cout << "\nВсего коллизий: ";
     return count/2;
 }
 
@@ -122,38 +127,52 @@ int main() {
     vector<string> stringsToChange;
     vector<int> hashes;
 
-    // генерация 10000 строк
-    for (int i = 0; i < all_word; i++) {
-        string generatedString = generate_rand(gen);
-        strings.push_back(generatedString);
-    }
-
-    // получаем 100 случайных строк их измененных копий, сохранение их в новый вектор
-    for (int i = 0; i < choose_word; i++) {
-        string strToChange = choose_random_string(gen, strings, stringsToChange);
-
-        int symbolIndex = get_random_index(gen, (int)strToChange.length() - 1);
-        modify_string(gen, stringsToChange, i*36, symbolIndex);
-    }
-
-    // получим хэши
-    short group = 36;   // 36 - сумма кол-ва латинских букв и арабских цифр (a-z, 0-9)
-    for (int i = 0; i < choose_word; i++) {
-        for (int j = 0; j < group; j++) {
-            int hash = calculate_hash(stringsToChange[j+i*group]);
-            hashes.push_back(hash);
+    for (int k = 0; k <= 7; k++){
+        if (k == 1 or k == 2){
+            continue;
         }
+        cout << k << "-Й ПРОГОН ПРОГРАММЫ:\n" << endl;
+
+        // генерация 10000 строк
+        for (int i = 0; i < all_word; i++) {
+            string generatedString = generate_rand(gen, k);
+            strings.push_back(generatedString);
+        }
+
+        // получаем 100 случайных строк их измененных копий, сохранение их в новый вектор
+        for (int i = 0; i < choose_word; i++) {
+            string strToChange = choose_random_string(gen, strings, stringsToChange);
+
+            int symbolIndex = get_random_index(gen, (int)strToChange.length() - 1);
+            modify_string(gen, stringsToChange, i*36, symbolIndex);
+        }
+
+        // получим хэши
+        short group = 36;   // 36 - сумма кол-ва латинских букв и арабских цифр (a-z, 0-9)
+        for (int i = 0; i < choose_word; i++) {
+            for (int j = 0; j < group; j++) {
+                int hash = calculate_hash(stringsToChange[j+i*group]);
+                hashes.push_back(hash);
+            }
+        }
+
+        // получим кол-во коллизий
+        cout << collisions_count(hashes, stringsToChange) << endl;
+
+        // сравнение строк
+        cout << "\nСравнение строк:" << endl;
+        compare_data(stringsToChange);
+
+        cout << "\nСравнение хэшей:" << endl;
+        compare_data(hashes);
+
+        // очистка памяти
+        strings.clear();
+        stringsToChange.clear();
+        hashes.clear();
+
+        cout << "\n\n\n\n\n\n";
     }
-
-    // получим кол-во коллизий
-    cout << collisions_count(hashes) << endl;
-
-    // сравнение строк
-    cout << "\nСравнение строк:" << endl;
-    compare_data(stringsToChange);
-
-    cout << "\nСравнение хэшей:" << endl;
-    compare_data(hashes);
 
     return 0;
 }
