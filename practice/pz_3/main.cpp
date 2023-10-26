@@ -53,21 +53,21 @@ string choose_random_string(mt19937 &gen, const vector<string> &strings, vector<
     return strToChange;
 }
 
-void modify_string(mt19937 &gen, vector<string> &stringsToChange, int word_index, int symbolIndex) {
+void modify_string(mt19937 &gen, vector<string> &stringsToChange, int word_index, int symbolIndex, vector<string> &strings) {
     string strToChange = stringsToChange[word_index];
 
     for (int j = 'a'; j <= 'z'; j++) {
         string temp = strToChange;
         if (j != strToChange[symbolIndex]) {
             temp[symbolIndex] = j;
-            stringsToChange.insert(stringsToChange.begin() + word_index + 1, temp);
+            strings.push_back(temp);
         }
     }
     for (int j = '0'; j <= '9'; j++) {
         string temp = strToChange;
         if (j != strToChange[symbolIndex]) {
             temp[symbolIndex] = j;
-            stringsToChange.insert(stringsToChange.begin() + word_index + 1, temp);
+            strings.push_back(temp);
         }
     }
 }
@@ -82,8 +82,8 @@ void modify_string(mt19937 &gen, vector<string> &stringsToChange, int word_index
 
 int collisions_count(const vector<int> &hashes, const vector<string> &strings) {
     int count = 0;
-    for (int i = 0; i < hashes.size(); i++) {
-        for (int j = 0; j < hashes.size(); j++) {
+    for (int i = 0; i < strings.size(); i++) {
+        for (int j = 0; j < strings.size(); j++) {
             if ((hashes[i] == hashes[j]) && (strings[i] != strings[j]) && i != j) {
                 count++;
                 cout << "Коллизия между " << i << " и " << j << endl;
@@ -144,20 +144,17 @@ int main() {
             string strToChange = choose_random_string(gen, strings, stringsToChange);
 
             int symbolIndex = get_random_index(gen, (int)strToChange.length() - 1);
-            modify_string(gen, stringsToChange, i*36, symbolIndex);
+            modify_string(gen, stringsToChange, i, symbolIndex, strings);
         }
 
         // получим хэши
-        short group = 36;   // 36 - сумма кол-ва латинских букв и арабских цифр (a-z, 0-9)
-        for (int i = 0; i < choose_word; i++) {
-            for (int j = 0; j < group; j++) {
-                int hash = calculate_hash(stringsToChange[j+i*group]);
-                hashes.push_back(hash);
-            }
+        for (int i = 0; i < strings.size(); i++) {
+            int hash = calculate_hash(strings[i]);
+            hashes.push_back(hash);
         }
 
         // получим кол-во коллизий
-        cout << collisions_count(hashes, stringsToChange) << endl;
+        cout << collisions_count(hashes, strings) << endl;
 
         // сравнение строк
         cout << "\nСравнение строк:" << endl;
