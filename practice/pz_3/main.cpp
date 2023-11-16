@@ -38,7 +38,7 @@ string generate_rand(mt19937 &gen, int mode) {
     return str;
 }
 
-// Генерация рандомного числа в заданых приделах (для вектора и строки)
+// Генерация рандомного числа в заданных приделах (для вектора и строки)
 int get_random_index(mt19937 &gen, int len) {
     uniform_int_distribution<> randIndex(0, len);
     int index = randIndex(gen);
@@ -84,9 +84,9 @@ int collisions_count(const vector<int> &hashes, const vector<string> &strings) {
     int count = 0;
     for (int i = 0; i < strings.size(); i++) {
         for (int j = 0; j < strings.size(); j++) {
-            if ((hashes[i] == hashes[j]) && (strings[i] != strings[j]) && i != j) {
+            if (i != j && (hashes[i] == hashes[j]) && (strings[i] != strings[j]) ) {
                 count++;
-                cout << "Коллизия между " << i << " и " << j << endl;
+                //cout << "Коллизия между " << i << " и " << j << endl;
             }
         }
     }
@@ -96,17 +96,19 @@ int collisions_count(const vector<int> &hashes, const vector<string> &strings) {
 
 template <typename  T>
 void compare_data(const vector<T> &data) {
+    int count = 0;
     auto start_time = chrono::steady_clock::now();
     for (int i = 0; i < data.size(); i++) {
         for (int j = i + 1; j < data.size(); j++) {
             if (data[i] == data[j]) {
                 // Что-то делаем...
+                count++;
             }
         }
     }
     auto end_time = chrono::steady_clock::now();
     auto diff = end_time - start_time;
-    cout << "Время сравнения: " << chrono::duration <double, milli> (diff).count() << " ms" << endl;
+    cout << "Время сравнения: " << chrono::duration <double, milli> (diff).count() << " ms " << count << endl;
 }
 
 // вывод векторы типа Т
