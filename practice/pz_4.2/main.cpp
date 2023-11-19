@@ -1,32 +1,33 @@
 #include <iostream>
-#include <map>
+#include <vector>
+#include <cmath>
 
 using namespace std;
 
 int main() {
-    string input;
-    getline(cin, input);
+    vector<int> arr;
+    int num = -1;
+    double sum = 0;
+    double average;
+    double temp = 0;
+    double result;
 
-    map<string, int> countWord;
-
-    string temp = "";   // временная переменная для формирования слова
-    for (auto x : input) {
-        if (x == ' '){
-            if(!temp.empty()) {
-                countWord[temp]++;  // если слова не было, сформируется новая пара, если же есть, то инкрементируется
-                temp = "";  // обнуляем слово, когда встретили пробел
-            }
-        } else {
-            temp += x;  // формируем слово
+    while (num != 0) {
+        cin >> num;
+        if (num != 0) {
+            arr.push_back(num);
+            sum += num;
         }
     }
-    if(!temp.empty()) {
-        countWord[temp]++;  // добавляем последнее слово (цикл закончился, а слово только сформировалось)
-    }
 
-    for (auto &x : countWord) {
-        cout << x.first << " " << x.second << endl;
+    average = sum / arr.size();
+
+    for (int i : arr) {
+        temp += pow(i - average, 2);
     }
+    result = sqrt(temp/(arr.size()-1.0));
+
+    cout << result;
 
     return 0;
 }
