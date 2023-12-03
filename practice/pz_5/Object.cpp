@@ -11,6 +11,12 @@ Object::Object() = default;
 Object::Object(std::string name, int length, int width, int height, float weight) :
 name(name), length(length), width(width), height(height), weight(weight) {}
 
+// конструктор указателя
+Object::Object(Object *pObject) {
+
+}
+std::string Object::get_name() const {return name;}
+
 int Object::get_len() const {return length;}
 
 int Object::get_width() const {return width;}

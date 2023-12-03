@@ -21,12 +21,17 @@ public:
     Object();
     // конструктор
     Object(std::string name, int length, int width, int height, float weight);
+    // конструктор с указателем
+    Object(Object *pObject);
     // конструктор копирования
     // деструктор
+    std::string get_name() const;
     int get_len() const;
     int get_width() const;
     int get_height() const;
     float get_weight() const;
+
+
 };
 
 #endif //PZ_5_OBJECT_H
